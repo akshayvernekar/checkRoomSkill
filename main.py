@@ -1,18 +1,18 @@
 # Import SDK packages
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 import time
+import json
 
 USERNAME = "akki"
 DEVICE_ID = "Tello-XXXX"
 
 # callback function
 def subscribe_callback(client,userdata,message):
-	print("-----------------------------")
-	print("Received data:")
-	print(message.payload)
-	print("from topic:")
-	print(message.topic)
-	print("-----------------------------")
+	payload = json.loads((message.payload).decode("utf-8"))
+	if payload['command'] == "checkroom":
+		# command tello to look around 
+	else:
+		print("unsupported command")
 
 # For certificate based connection
 myMQTTClient = AWSIoTMQTTClient("tello_client")
@@ -22,7 +22,6 @@ myMQTTClient.configureOfflinePublishQueueing(-1)  # Infinite offline Publish que
 myMQTTClient.configureDrainingFrequency(2)  # Draining: 2 Hz
 myMQTTClient.configureConnectDisconnectTimeout(10)  # 10 sec
 myMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
-
 
 topic_name = "cmd/tello/"+USERNAME+"/"+DEVICE_ID
 print(topic_name)
